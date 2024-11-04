@@ -33,6 +33,7 @@ public class CustomerView implements Observer
   private final JScrollPane theSP      = new JScrollPane();
   private final JButton     theBtCheck = new JButton( Name.CHECK );
   private final JButton     theBtClear = new JButton( Name.CLEAR );
+  private final JButton     theBtCheckName = new JButton( Name.CHECK );
 
   private Picture thePicture = new Picture(80,80);
   private StockReader theStock   = null;
@@ -70,9 +71,15 @@ public class CustomerView implements Observer
     theBtCheck.setBounds( 16, 25+60*0, 80, 40 );    // Check button
     theBtCheck.addActionListener(                   // Call back code
       e -> cont.doCheck( theInput.getText() ) );
-    cp.add( theBtCheck );                           //  Add to canvas
-
-    theBtClear.setBounds( 16, 25+60*1, 80, 40 );    // Clear button
+    cp.add( theBtCheck );     
+    
+    theBtCheckName.setBounds( 16, 25+60*1, 80, 40 );    // Check button
+    theBtCheckName.addActionListener(                   // Call back code
+      e -> cont.doCheckByName( theInput.getText() ) );
+    cp.add( theBtCheckName );    
+    
+    
+    theBtClear.setBounds( 16, 25+60*2, 80, 40 );    // Clear button
     theBtClear.addActionListener(                   // Call back code
       e -> cont.doClear() );
     cp.add( theBtClear );                           //  Add to canvas
@@ -91,7 +98,7 @@ public class CustomerView implements Observer
     cp.add( theSP );                                //  Add to canvas
     theSP.getViewport().add( theOutput );           //  In TextArea
 
-    thePicture.setBounds( 16, 25+60*2, 80, 80 );   // Picture area
+    thePicture.setBounds( 16, 25+60*3, 80, 80 );   // Picture area
     cp.add( thePicture );                           //  Add to canvas
     thePicture.clear();
     
