@@ -2,9 +2,11 @@ package catalogue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Currency;
 import java.util.Formatter;
 import java.util.Locale;
+
 
 /**
  * A collection of products,
@@ -56,10 +58,29 @@ public class Basket extends ArrayList<Product> implements Serializable
   // Will be in the Java doc for Basket
   @Override
   public boolean add( Product pr )
-  {                              
-    return super.add( pr );     // Call add in ArrayList
-  }
 
+	  {     
+			boolean inList = false;
+			for (Product x:this) {
+				if (x.getProductNum().equals(pr.getProductNum())) {
+					inList = true;
+					x.setQuantity(x.getQuantity()+1);
+					
+				}
+				
+			}
+			if (inList == false) {
+				super.add( pr );  
+				Collections.sort(this);
+				return true; // Call add in ArrayList
+				
+			} else {
+				//pr.setQuantity(pr.getQuantity()+1);
+				
+				return true;
+			}
+			
+	  }
   /**
    * Returns a description of the products in the basket suitable for printing.
    * @return a string description of the basket products
@@ -74,6 +95,7 @@ public class Basket extends ArrayList<Product> implements Serializable
     if ( theOrderNum != 0 )
       fr.format( "Order number: %03d\n", theOrderNum );
       
+    
     if ( this.size() > 0 )
     {
       for ( Product pr: this )
@@ -93,4 +115,6 @@ public class Basket extends ArrayList<Product> implements Serializable
     }
     return sb.toString();
   }
+
+
 }

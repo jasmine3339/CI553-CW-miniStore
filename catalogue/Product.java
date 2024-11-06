@@ -1,6 +1,8 @@
 package catalogue;
 
+
 import java.io.Serializable;
+import java.lang.Comparable;
 
 /**
  * Used to hold the following information about
@@ -9,7 +11,7 @@ import java.io.Serializable;
  * @version 2.0
  */
 
-public class Product implements Serializable
+public class Product implements Serializable, Comparable<Product>
 {
   private static final long serialVersionUID = 20092506;
   private String theProductNum;       // Product number
@@ -57,5 +59,9 @@ public class Product implements Serializable
   { 
     theQuantity = aQuantity;
   }
+  public int compareTo(Product prod1) {
+		// TODO Auto-generated method stub
+		return this.getProductNum().compareTo(prod1.getProductNum());
+	}
 
 }
