@@ -64,7 +64,7 @@ public class Basket extends ArrayList<Product> implements Serializable
 			for (Product x:this) {
 				if (x.getProductNum().equals(pr.getProductNum())) {
 					inList = true;
-					x.setQuantity(x.getQuantity()+1);
+					x.setQuantity(x.getQuantity()+pr.getQuantity());
 					
 				}
 				
@@ -81,6 +81,38 @@ public class Basket extends ArrayList<Product> implements Serializable
 			}
 			
 	  }
+  
+  
+  
+ /**
+  * returns true or false for weather the item has been removed from the basket 
+  * @param pr, the product to be removed
+  * @param removeNum, how many of the number to be removed
+  * @return true/false, the item has been removed.
+  */  
+  public boolean doRemove(Product pr, int removeNum) {
+	  	System.out.println("remove!");
+		for (Product x:this) {
+			if (x.getProductNum().equals(pr.getProductNum())) {
+				System.out.println(pr.getProductNum());
+				int currentquant = x.getQuantity();
+				x.setQuantity(currentquant - removeNum);
+				if (x.getQuantity()>0) {
+					return true;
+				} else {
+					this.remove(x);
+					return true;
+				}
+				
+			}
+			
+		}
+		return false;  
+  }
+  
+ 
+  
+  
   /**
    * Returns a description of the products in the basket suitable for printing.
    * @return a string description of the basket products

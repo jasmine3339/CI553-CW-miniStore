@@ -59,13 +59,13 @@ public class CashierModel extends Observable
     String theAction = "";
     theState  = State.process;                  // State process
     pn  = productNum.trim();                    // Product no.
-    int    amount  = quantity;                         //  & quantity
+    //int    amount  = quantity;                         //  & quantity
     try
     {
       if ( theStock.exists( pn ) )              // Stock Exists?
       {                                         // T
         Product pr = theStock.getDetails(pn);   //  Get details
-        if ( pr.getQuantity() >= amount )       //  In stock?
+        if ( pr.getQuantity() >= quantity )       //  In stock?
         {                                       //  T
           theAction =                           //   Display 
             String.format( "%s : %7.2f (%2d) ", //
@@ -73,7 +73,7 @@ public class CashierModel extends Observable
               pr.getPrice(),                    //    price
               pr.getQuantity() );               //    quantity     
           theProduct = pr;                      //   Remember prod.
-          theProduct.setQuantity( amount );     //    & quantity
+          theProduct.setQuantity( quantity );     //    & quantity
           theState = State.checked;             //   OK await BUY 
         } else {                                //  F
           theAction =                           //   Not in Stock
@@ -98,7 +98,7 @@ public class CashierModel extends Observable
   public void doBuy()
   {
     String theAction = "";
-    int    amount  = 1;                         //  & quantity
+    //int    amount  = 1;                         //  & quantity
     try
     {
       if ( theState != State.checked )          // Not checked
@@ -112,7 +112,7 @@ public class CashierModel extends Observable
         if ( stockBought )                      // Stock bought
         {                                       // T
           makeBasketIfReq();                    //  new Basket ?
-          theBasket.add( theProduct );          //  Add to bought
+          theBasket.add( theProduct  );          //  Add to bought
           theAction = "Purchased " +            //    details
                   theProduct.getDescription();  //
         } else {                                // F
@@ -128,6 +128,38 @@ public class CashierModel extends Observable
     theState = State.process;                   // All Done
     setChanged(); notifyObservers(theAction);
   }
+  
+  
+  /**
+   * removing items from the basket
+   * @param pn, the product number to find the product object
+   * @param theQuantity, how many of the item they want to remove.
+   */
+  public void doRemove(String pn, int theQuantity) {
+	  //System.out.println("remove in the model");
+	  String theAction = "";
+	  try {
+		  if ( theState != State.checked )  
+		  {
+			  theAction = "please check its availablity";
+		  }
+		  else {	
+			Product pr = theStock.getDetails(pn);
+			int removenum = theQuantity;
+			if (removenum!=0) {
+				System.out.println(removenum);
+				boolean removed = theBasket.doRemove(pr,removenum);
+				//use removed to added error message i think, if not removed then change action
+				theAction = "removed";
+			}	
+		  }
+	  } 
+	  catch(Exception e) {
+		  System.out.print("error "+e);
+	  }
+	  setChanged(); notifyObservers(theAction);
+  }
+  
   
   /**
    * Customer pays for the contents of the basket

@@ -29,6 +29,12 @@ public class CashierController
   {
     model.doCheck(pn, theQuantity);
   }
+  
+  public void doRemove( String pn, int theQuantity )
+  {
+	//System.out.println("remove in the controller");
+    model.doRemove(pn, theQuantity);
+  }
 
    /**
    * Buy interaction from view

@@ -21,6 +21,8 @@ public class CustomerView implements Observer
   {
     public static final String CHECK  = "Check";
     public static final String CLEAR  = "Clear";
+    public static final String CHECKNAME  = "PName";
+
   }
 
   private static final int H = 300;       // Height of window pixels
@@ -33,7 +35,7 @@ public class CustomerView implements Observer
   private final JScrollPane theSP      = new JScrollPane();
   private final JButton     theBtCheck = new JButton( Name.CHECK );
   private final JButton     theBtClear = new JButton( Name.CLEAR );
-  private final JButton     theBtCheckName = new JButton( Name.CHECK );
+  private final JButton     theBtCheckName = new JButton( Name.CHECKNAME );
 
   private Picture thePicture = new Picture(80,80);
   private StockReader theStock   = null;
