@@ -54,14 +54,19 @@ public class CashierModel extends Observable
    * Check if the product is in Stock
    * @param productNum The product number
    */
-  public void doCheck(String productNum, int quantity )
+  public void doCheck(String productNum, String strquantity )
   {
     String theAction = "";
     theState  = State.process;                  // State process
-    pn  = productNum.trim();                    // Product no.
+    pn  = productNum.trim();  // Product no.
+    
+    
+    
+    
     //int    amount  = quantity;                         //  & quantity
     try
     {
+      int quantity = Integer.parseInt(strquantity); //try to put the quantity as an integer
       if ( theStock.exists( pn ) )              // Stock Exists?
       {                                         // T
         Product pr = theStock.getDetails(pn);   //  Get details
@@ -83,7 +88,13 @@ public class CashierModel extends Observable
         theAction =                             //  Unknown
           "Unknown product number " + pn;       //  product no.
       }
-    } catch( StockException e )
+    } catch (NumberFormatException e) {
+    	theAction = "Unknown quantity number " + strquantity;
+    	
+    }
+    
+    
+    catch( StockException e )
     {
       DEBUG.error( "%s\n%s", 
             "CashierModel.doCheck", e.getMessage() );
@@ -135,7 +146,7 @@ public class CashierModel extends Observable
    * @param pn, the product number to find the product object
    * @param theQuantity, how many of the item they want to remove.
    */
-  public void doRemove(String pn, int theQuantity) {
+  public void doRemove(String pn, String strQuantity) {
 	  //System.out.println("remove in the model");
 	  String theAction = "";
 	  try {
@@ -144,13 +155,20 @@ public class CashierModel extends Observable
 			  theAction = "please check its availablity";
 		  }
 		  else {	
+			int theQuantity =  Integer.parseInt(strQuantity);
 			Product pr = theStock.getDetails(pn);
 			int removenum = theQuantity;
 			if (removenum!=0) {
 				System.out.println(removenum);
 				boolean removed = theBasket.doRemove(pr,removenum);
+				if (removed) {
+					theStock.addStock(pn, theQuantity);
+					theAction = "removed";
+				} else {
+					theAction = "unable to remove";
+				}
 				//use removed to added error message i think, if not removed then change action
-				theAction = "removed";
+				
 			}	
 		  }
 	  } 

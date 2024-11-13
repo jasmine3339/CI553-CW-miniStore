@@ -25,12 +25,12 @@ public class CashierController
    * Check interaction from view
    * @param pn The product number to be checked
    */
-  public void doCheck( String pn, int theQuantity )
+  public void doCheck( String pn, String theQuantity )
   {
     model.doCheck(pn, theQuantity);
   }
   
-  public void doRemove( String pn, int theQuantity )
+  public void doRemove( String pn, String theQuantity )
   {
 	//System.out.println("remove in the controller");
     model.doRemove(pn, theQuantity);

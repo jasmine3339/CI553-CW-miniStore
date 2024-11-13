@@ -73,7 +73,7 @@ public class CashierView implements Observer
     
     theBtCheck.setBounds( 16, 25+60*0, 80, 40 );    // Check Button
     theBtCheck.addActionListener(                   // Call back code
-      e -> cont.doCheck( theInput.getText(),Integer.parseInt(theQuantity.getText()) ) );
+      e -> cont.doCheck( theInput.getText(),theQuantity.getText()) );
     cp.add( theBtCheck );                           //  Add to canvas
 
     theBtBuy.setBounds( 16, 25+60*1, 80, 40 );      // Buy button 
@@ -83,7 +83,7 @@ public class CashierView implements Observer
 
     theBtRemove.setBounds( 16, 25+60*2, 80, 40 );   // Bought Button
     theBtRemove.addActionListener(                  // Call back code
-      e -> cont.doRemove( theInput.getText(),  Integer.parseInt(theQuantity.getText())) );
+      e -> cont.doRemove( theInput.getText(),  theQuantity.getText()) );
     cp.add( theBtRemove );                          //  Add to canvas
 
     

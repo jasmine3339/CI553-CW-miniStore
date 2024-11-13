@@ -94,14 +94,18 @@ public class Basket extends ArrayList<Product> implements Serializable
 	  	System.out.println("remove!");
 		for (Product x:this) {
 			if (x.getProductNum().equals(pr.getProductNum())) {
-				System.out.println(pr.getProductNum());
+				System.out.println(pr.getQuantity()+" quantity number of pr");
 				int currentquant = x.getQuantity();
-				x.setQuantity(currentquant - removeNum);
-				if (x.getQuantity()>0) {
-					return true;
-				} else {
-					this.remove(x);
-					return true;
+				if (currentquant - removeNum >-1) {
+					x.setQuantity(currentquant - removeNum);
+					
+					
+					if (x.getQuantity()>0) {
+						return true;
+					} else {
+						this.remove(x);
+						return true;
+					}
 				}
 				
 			}
