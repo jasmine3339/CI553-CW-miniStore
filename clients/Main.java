@@ -16,6 +16,10 @@ import middle.LocalMiddleFactory;
 import middle.MiddleFactory;
 import javax.swing.*;
 import java.awt.*;
+import clients.login.loginController;
+import clients.login.loginModel;
+import clients.login.loginView;
+
 
 /**
  * Starts all the clients (user interface)  as a single application.
@@ -45,6 +49,7 @@ class Main
     startCashierGUI_MVC( mlf ); // you can create multiple clients
     startPackingGUI_MVC( mlf );
     startBackDoorGUI_MVC( mlf );
+    startloginGUI_MVC( mlf );
   }
   
   /**
@@ -131,4 +136,20 @@ class Main
     window.setVisible(true);         // Make window visible
   }
   
+  public void startloginGUI_MVC(MiddleFactory mlf )
+  {
+    JFrame  window = new JFrame();
+
+    window.setTitle( "login MVC");
+    //window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+    Dimension pos = PosOnScrn.getPos();
+    
+    loginModel model      = new loginModel(mlf);
+    loginView view        = new loginView( window, mlf, pos.width, pos.height );
+    loginController cont  = new loginController( model, view );
+    view.setController( cont );
+
+    model.addObserver( view );       // Add observer to the model
+    window.setVisible(true);         // Make window visible
+  }
 }
