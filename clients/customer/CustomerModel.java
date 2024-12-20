@@ -7,6 +7,7 @@ import middle.MiddleFactory;
 import middle.OrderProcessing;
 import middle.StockException;
 import middle.StockReader;
+import java.sql.ResultSet;
 
 import javax.swing.*;
 import java.util.Observable;
@@ -93,6 +94,22 @@ public class CustomerModel extends Observable
     setChanged(); notifyObservers(theAction);
   }
 
+  public String checkByNameDB(String name) {
+	  try {
+		 ResultSet descriptions = theStock.getAllDescription();
+		 System.out.println(descriptions);
+
+	  } catch (Exception e) {
+		  System.out.println("exception "+e);
+	  }
+	  
+	  
+	  return null;
+  }
+  
+  
+  
+  
   /**
    * Clear the products from the basket
    */
@@ -115,7 +132,7 @@ public class CustomerModel extends Observable
   }
   
   /**
-   * ask for update of view callled at start
+   * ask for update of view called at start
    */
   private void askForUpdate()
   {

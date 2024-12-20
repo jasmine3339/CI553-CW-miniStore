@@ -37,5 +37,12 @@ public interface MiddleFactory
    */
   public OrderProcessing makeOrderProcessing() throws OrderException;
 
+  /**
+   * the same but for the logins
+   */
+  public LoginReader makeLoginReader() throws LoginException;
+  
+  public LoginReadWriter makeLoginWriter() throws LoginException;
+
 }
 

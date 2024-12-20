@@ -16,6 +16,7 @@ import remote.RemoteStockR_I;
 import javax.swing.*;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
 
 /**
  * Setup connection to the middle tier
@@ -105,4 +106,30 @@ public class F_StockR implements StockReader
     }
   }
 
+  @Override
+  public  synchronized ResultSet  getAllDescription() throws StockException {
+	// TODO Auto-generated method stub 
+	  DEBUG.trace("F_StockR:getAllDescription()" );
+	    try
+	    {
+	      if ( aR_StockR == null ) 
+	    	  connect();
+	      	return aR_StockR.getAllDescription();
+	    } catch ( StockException e )
+	    {
+	      aR_StockR = null;
+	      throw new StockException( "Net: " + e.getMessage() );
+	     
+	    } 
+	    //return null;
+
 }
+
+@Override
+public int getNextOrderNum() throws StockException {
+	// TODO Auto-generated method stub
+	return 0;
+}}
+  
+  
+  

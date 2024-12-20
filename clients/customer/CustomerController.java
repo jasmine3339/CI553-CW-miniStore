@@ -30,12 +30,17 @@ public class CustomerController
   }
   
   public void doCheckByName( String name ) {
-	  NameToNumber nameToNumber = new NameToNumber();
-	  String pn = nameToNumber.getNumberByName(nameToNumber, name);
-	  if (pn != null) {
-		  model.doCheck(pn);
+	  String foundindb = model.checkByNameDB(name);
+	  if (foundindb != null) {
+		  model.doCheck(foundindb);
+	  } else {
+		  NameToNumber nameToNumber = new NameToNumber();
+		  String pn = nameToNumber.getNumberByName(nameToNumber, name);
+		  if (pn != null) {
+			  model.doCheck(pn);
+		  }
 	  }
-	  
+		  
   }
 
   /**

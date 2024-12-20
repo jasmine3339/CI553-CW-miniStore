@@ -149,20 +149,19 @@ public class CashierModel extends Observable
   public void doRemove(String pn, String strQuantity) {
 	  //System.out.println("remove in the model");
 	  String theAction = "";
-	  try {
-		  if ( theState != State.checked )  
-		  {
-			  theAction = "please check its availablity";
-		  }
-		  else {	
-			int theQuantity =  Integer.parseInt(strQuantity);
-			Product pr = theStock.getDetails(pn);
-			int removenum = theQuantity;
-			if (removenum!=0) {
+	  try { //in a try catch incase the integer cant be parsed or errors occur with the db
+		  if ( theState != State.checked )  //checked the user entered the correct format
+		  {  theAction = "please check its availablity";
+		  }  else {	 		// if the item has been checked
+			int theQuantity =  Integer.parseInt(strQuantity); //get the quantity from the input
+			Product pr = theStock.getDetails(pn); //the product details
+			int removenum = theQuantity; //and the quantity is how many to be removed
+			if (removenum!=0) { //checking the user isnt removing 0 items
 				System.out.println(removenum);
-				boolean removed = theBasket.doRemove(pr,removenum);
+				boolean removed = theBasket.doRemove(pr,removenum); //calls the basket function 
 				if (removed) {
-					theStock.addStock(pn, theQuantity);
+					theStock.addStock(pn, theQuantity); 
+					//we then add back the stock we removed so the availability is right
 					theAction = "removed";
 				} else {
 					theAction = "unable to remove";

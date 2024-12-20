@@ -2,6 +2,8 @@ package middle;
 
 import catalogue.Product;
 
+import java.sql.ResultSet;
+
 import javax.swing.*;
 
 /**
@@ -39,4 +41,19 @@ public interface StockReader
    */
   
   ImageIcon getImage(String pNum) throws StockException;
+  
+  
+  
+  /**
+   * get list of descriptions to search by
+   * @return list of descriptinos from db
+   */
+  ResultSet getAllDescription( ) throws StockException;
+  
+  /**
+   * reutns the last order numebr so the next one can be one bigger
+   * @return
+   * @throws StockException
+   */
+  int getNextOrderNum() throws StockException;
 }

@@ -93,23 +93,22 @@ public class Basket extends ArrayList<Product> implements Serializable
   public boolean doRemove(Product pr, int removeNum) {
 	  	System.out.println("remove!");
 		for (Product x:this) {
-			if (x.getProductNum().equals(pr.getProductNum())) {
-				System.out.println(pr.getQuantity()+" quantity number of pr");
+			//this checks every item in the pocket and sees if it is the same as the entered product number
+			if (x.getProductNum().equals(pr.getProductNum())) { 
+				//System.out.println(pr.getQuantity()+" quantity number of pr");
 				int currentquant = x.getQuantity();
+				//this sets the new quantity to the current quantity - the specified amount to remove
 				if (currentquant - removeNum >-1) {
 					x.setQuantity(currentquant - removeNum);
-					
-					
+					//this checks if the quantity in the basket is 0, if it is it is removed from the basket	
 					if (x.getQuantity()>0) {
 						return true;
 					} else {
 						this.remove(x);
 						return true;
 					}
-				}
-				
+				}				
 			}
-			
 		}
 		return false;  
   }

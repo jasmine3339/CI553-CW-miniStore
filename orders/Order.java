@@ -25,6 +25,7 @@ import java.util.*;
 public class Order implements OrderProcessing
 {
   private enum State {Waiting, BeingPacked, ToBeCollected };
+  
   /**
    * Wraps a Basket and it state into a folder
    */
@@ -48,7 +49,11 @@ public class Order implements OrderProcessing
   
   // Active orders in the Catshop system
   private final ArrayList<Folder>  folders = new ArrayList<>();
-  private static int theNextNumber = 1;          // Start at order 1
+  private static int theNextNumber;
+  public Order(int orderNum) {
+	  System.out.println("the ordernum "+orderNum);
+	  theNextNumber = orderNum;          // Start at order at last orderNum+1
+  }
 
   /**  
    * Used to generate debug information

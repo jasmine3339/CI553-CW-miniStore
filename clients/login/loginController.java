@@ -2,6 +2,7 @@ package clients.login;
 
 import clients.login.loginModel;
 import clients.login.loginView;
+import catalogue.User;
 
 /**
  * The BackDoor Controller
@@ -28,9 +29,17 @@ public class loginController
    */
   public void doLogin( String username, String password )
   {
-    model.doLogin(username, password);
+	model.doLogin(username, password);
+	System.out.println("login in the controller");
+    //User newUser = model.getUser();
+	//System.out.println(newUser.getUsername());
+    //view.setUser(newUser);
   }
-  
+  public void getUserfromModel() {
+	  User newUser = model.getUser();
+	  System.out.println(newUser.getUsername());
+	  view.setUser(newUser);
+  }
   /**
    * RStock interaction from view
    * @param pn       The product number to be re-stocked
@@ -38,7 +47,7 @@ public class loginController
    */
   public void doCreate( String username, String password, String passcheck )
   {
-    model.doCreate(username, password, passcheck);
+     model.doCreate(username, password, passcheck);
   }
 
   /**
@@ -48,7 +57,18 @@ public class loginController
   {
     model.doClear();
   }
-
   
+  public void doProgress()
+  {
+	  model.doProgress();
+  }
+  public void doOrderCheck()
+  {
+	  model.doOrderCheck();
+  }
+  public void doReturn()
+  {
+	  model.doReturn();
+  }
 }
 

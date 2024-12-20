@@ -2,13 +2,16 @@ package clients.login;
 
 import catalogue.Basket;
 import catalogue.BetterBasket;
-import catalogue.Product;
+import catalogue.User;
 import debug.DEBUG;
 import middle.MiddleFactory;
-import middle.StockException;
-import middle.StockReadWriter;
-
+import middle.LoginException;
+import middle.LoginReader;
+import middle.LoginReadWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
+ 
 
 /**
  * Implements the Model of the back door client
@@ -16,9 +19,13 @@ import java.util.Observable;
 public class loginModel extends Observable
 {
   private Basket      theBasket  = null;            // Bought items
-  private String      pn = "";                      // Product being processed
+  private String      checkingname = "";  					// Product being processed
+  private LoginReader loginLink = null;			//link to the users database
 
-  private StockReadWriter theStock     = null;
+  public ArrayList<Integer> numbers = new ArrayList<Integer>(List.of(0,1,2,3,4,5,6,7,8,9));
+  private LoginReadWriter loginwriter     = null;
+  
+  private User 		  currentUser = null;
 
   /*
    * Construct the model of the back door client
@@ -29,13 +36,13 @@ public class loginModel extends Observable
   {
     try                                           // 
     {      
-      theStock = mf.makeStockReadWriter();        // Database access
+      loginLink = mf.makeLoginReader();        // Database access
+      loginwriter = mf.makeLoginWriter();
     } catch ( Exception e )
     {
       DEBUG.error("CustomerModel.constructor\n%s", e.getMessage() );
     }
 
-    theBasket = makeBasket();                     // Initial Basket
   }
   
   /**
@@ -51,95 +58,139 @@ public class loginModel extends Observable
    * Check The current stock level
    * @param productNum The product number
    */
-  public void doCheck(String productNum )
+  public User doCheck(String username )
   {
-    pn  = productNum.trim();                    // Product no.
+	checkingname = username.trim(); //username with no whitespace
+	String theAction = "";
+	try {
+		if ( loginLink.exists( checkingname ) )    {
+			User returninguser = loginLink.getPassword(checkingname);
+			System.out.println("doCheck user check");
+			return returninguser;
+		}
+	} catch (Exception e){
+		System.out.println(e+"exception");
+		
+		return null;
+				
+	}
+	return null;
+	
+                    
   }
   
   
   
   public void doLogin(String username, String password) {
+	  boolean loginFlag = false;
+	  String theAction = "";
+	  try {
+		  currentUser = doCheck(username);
+		  String actualpassword = currentUser.getPassword();
+		  if (actualpassword.equals(password)) {
+			  loginFlag = true;
+			  theAction = "logging in";
+			  
+		  } else {
+			  theAction = "username or password incorrect";
+		  }
+	  } catch (Exception e) {
+		  System.out.println("exception "+e);
+		  theAction = "username or password incorrect";
+	  }
 	  System.out.println("login"+username +password);
+	  System.out.println("have they been logged in"+loginFlag);
+	  setChanged(); notifyObservers(theAction);
+
+  }
+  public User getUser() {
+	  System.out.println("getUser in model");
+	  return currentUser;
   }
 
   public void doCreate(String username, String password, String passcheck) {
+	  boolean loginFlag = false;
 	  System.out.println("create"+passcheck);
+	  username = username.trim();
+	  password = password.trim();
+	  passcheck = password.trim();
+	  String theAction = "";
+	  boolean numFlag = false;
+	  User usernamecheck = doCheck(username);
+	  if (usernamecheck == null) {
+		  try
+		    {
+			  //check if the username is empty
+			  //check in db if there is a username with that name already
+			  if (password.equals(passcheck)) {
+				  if ( password.length() > 7 && password.length() < 16) {
+					  if (!(password.toLowerCase().equals(password))) {
+						  if (!(password.toUpperCase().equals(password))) {
+							  for (int num:numbers) {
+								  if (password.contains(String.valueOf(num))) 
+								  {
+									  numFlag = true;
+									  
+									  break;
+								  } 
+							  }
+							  if (numFlag == true) {
+								  theAction =  "adding your account";
+								  loginwriter.addUser(username, password);
+								  currentUser = new User(username,password);
+								  loginFlag = true;
+								  
+								  
+								  
+								  
+								  
+								  //add account to the database
+							  } else {
+								  theAction = "try adding a number";
+							  }
+							  
+							   
+						  } else {
+							  theAction =  "try adding a lowercase letter";			  
+						  }
+					  } else {
+						  theAction = "try adding an uppercase letter";
+					  }
+				  } else {
+					  theAction =  "is your password between 8-15 characters";
+				  }
+			   } else {
+				   if (passcheck.equals("")) 
+				   {
+					   theAction = "make sure to re enter your password";   
+				   } else {
+					   theAction =  "passwords do not match";
+				   }
+			   } 
+			  
+		    } catch (Exception e) {
+		    	theAction = e.getMessage();
+		    }
+	  } else {
+		  theAction = "username already exists, please choose another";
+		  }
+		      
+	  setChanged(); notifyObservers(theAction);
   }
   
-  /**
-   * Query 
-   * @param productNum The product number of the item
-   */
-  public void doQuery(String productNum )
-  {
-    String theAction = "";
-    pn  = productNum.trim();                    // Product no.
-    try
-    {                 //  & quantity
-      if ( theStock.exists( pn ) )              // Stock Exists?
-      {                                         // T
-        Product pr = theStock.getDetails( pn ); //  Product
-        theAction =                             //   Display 
-          String.format( "%s : %7.2f (%2d) ",   //
-          pr.getDescription(),                  //    description
-          pr.getPrice(),                        //    price
-          pr.getQuantity() );                   //    quantity
-      } else {                                  //  F
-        theAction =                             //   Inform
-          "Unknown product number " + pn;       //  product number
-      } 
-    } catch( StockException e )
-    {
-      theAction = e.getMessage();
-    }
-    setChanged(); notifyObservers(theAction);
-  }
 
-  /**
-   * Re stock 
-   * @param productNum The product number of the item
-   * @param quantity How many to be added
-   */
-  public void doRStock(String productNum, String quantity )
+  public void doProgress()
   {
-    String theAction = "";
-    theBasket = makeBasket();
-    pn  = productNum.trim();                    // Product no.
-    String pn  = productNum.trim();             // Product no.
-    int amount = 0;
-    try
-    {
-      String aQuantity = quantity.trim();
-      try
-      {
-        amount = Integer.parseInt(aQuantity);   // Convert
-        if ( amount < 0 )
-          throw new NumberFormatException("-ve");
-      }
-      catch ( Exception err)
-      {
-        theAction = "Invalid quantity";
-        setChanged(); notifyObservers(theAction);
-        return;
-      }
-  
-      if ( theStock.exists( pn ) )              // Stock Exists?
-      {                                         // T
-        theStock.addStock(pn, amount);          //  Re stock
-        Product pr = theStock.getDetails(pn);   //  Get details
-        theBasket.add(pr);                      //
-        theAction = "";                         // Display 
-      } else {                                  // F
-        theAction =                             //  Inform Unknown
-          "Unknown product number " + pn;       //  product number
-      } 
-    } catch( StockException e )
-    {
-      theAction = e.getMessage();
-    }
-    setChanged(); notifyObservers(theAction);
+	  //TODO fill in here 
   }
-
+  public void doOrderCheck()
+  {
+	  //TODO fill in here
+  }
+  public void doReturn()
+  {
+	  //TODO fill in here
+  }
   /**
    * Clear the product()
    */
@@ -150,14 +201,7 @@ public class loginModel extends Observable
     theAction = "Enter Product Number";       // Set display
     setChanged(); notifyObservers(theAction);  // inform the observer view that model changed
   }
-  
-  /**
-   * return an instance of a Basket
-   * @return a new instance of a Basket
-   */
-  protected Basket makeBasket()
-  {
-    return new Basket();
-  }
+ 
+ 
 }
 

@@ -6,6 +6,7 @@ import middle.StockException;
 
 import javax.swing.*;
 import java.rmi.RemoteException;
+import java.sql.ResultSet;
 
 // There can only be 1 ResultSet opened per statement
 // so no simultaneous use of the statement object
@@ -74,6 +75,9 @@ public class      R_StockRW
     return aStockRW.getImage( pNum );
   }
 
+  public synchronized ResultSet getAllDescription() throws StockException{
+	  return aStockRW.getAllDescription();
+  }
 
   /**
    * Buys stock and hence decrements number in the stock list

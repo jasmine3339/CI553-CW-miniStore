@@ -44,7 +44,22 @@ class Setup
   "insert into ProductTable values " +
      "('0007', '32Gb USB2 drive',   'images/pic0007.jpg', 6.99)",
 //  "select * from ProductTable",
+     
+     "drop table Users",
+     "create table Users ("+
+         "username      Varchar(20)," +
+         "password      Varchar(12))",
 
+         "insert into Users values ( 'jas',  '00000000' )",
+
+         
+   "drop table Orders",
+   "create table Orders ("+
+		   "orderNum	Integer,"+
+		   "productNo	Char(4),"+
+		   "Quantity	Integer)",
+		   
+		   "insert into Orders values (1,'0003',2)",
 
   "drop table StockTable",
   "create table StockTable ("+
@@ -104,6 +119,7 @@ class Setup
     // execute SQL commands to create table, insert data
     for ( String sqlStatement : sqlStatements )
     {
+    	System.out.println(sqlStatement);
       try
       {
         System.out.println( sqlStatement );

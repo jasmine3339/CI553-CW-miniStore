@@ -172,4 +172,41 @@ public class StockR implements StockReader
     return new ImageIcon( filename );
   }
 
+
+
+  public synchronized ResultSet getAllDescription( ) {
+	  
+	try {
+		ResultSet rs = getStatementObject().executeQuery(
+		        "select description" +
+		        "  from ProductTable "
+		        		);
+		return rs;
+	} catch (Exception e){
+		System.out.println(e);
+		return null;
+	}
+  }
+  public synchronized int getNextOrderNum() {
+	  try {
+		  int biggestNum = 95;
+		  ResultSet rs = getStatementObject().executeQuery(
+				  "select orderNum"+
+				  " from Orders");
+		  //System.out.println("test1");
+		  if (rs.next()) {
+		  biggestNum = rs.getInt("orderNum");
+		  }
+		  //System.out.println("test2");
+		  rs.close();
+		  System.out.println(biggestNum);
+		  biggestNum++;
+		  System.out.println(biggestNum);
+		  return biggestNum;
+		  
+	  } catch (Exception e) {
+		  System.out.println(e);
+		  return 36;
+	  }
+  }
 }

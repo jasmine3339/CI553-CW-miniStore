@@ -56,5 +56,17 @@ public class RemoteMiddleFactory implements MiddleFactory
   {
     return new F_Order( theOrder_URL );
   }
+
+@Override
+public LoginReader makeLoginReader() throws LoginException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public LoginReadWriter makeLoginWriter() throws LoginException {
+	// TODO Auto-generated method stub
+	return null;
+}
 }
 

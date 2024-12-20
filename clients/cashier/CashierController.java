@@ -30,6 +30,11 @@ public class CashierController
     model.doCheck(pn, theQuantity);
   }
   
+  /**
+   * remove item from basket, from view to model
+   * @param pn is the product number
+   * @param theQuantity how many items to remove
+   */
   public void doRemove( String pn, String theQuantity )
   {
 	//System.out.println("remove in the controller");

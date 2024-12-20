@@ -6,7 +6,9 @@
 package middle;
 
 import dbAccess.StockR;
+import dbAccess.LoginR;
 import dbAccess.StockRW;
+import dbAccess.LoginRW;
 import orders.Order;
 
 
@@ -22,6 +24,8 @@ public class LocalMiddleFactory implements MiddleFactory
   private static StockR  aStockR  = null;
   private static StockRW aStockRW = null;
   private static Order   aOrder   = null;
+  private static LoginR  aLoginR  = null;
+  private static LoginRW aLoginRW = null;
   
   /**
    * Return an object to access the database for read only access.
@@ -54,9 +58,30 @@ public class LocalMiddleFactory implements MiddleFactory
    
   public OrderProcessing makeOrderProcessing() throws OrderException
   {
-    if ( aOrder == null )
-      aOrder = new Order();
+	 
+	
+    if ( aOrder == null ) {
+      int startOrderNum;
+    	if (aStockR != null) {
+    		startOrderNum = aStockR.getNextOrderNum();
+    	} else {
+    		startOrderNum = 27;
+    	}
+      aOrder = new Order(startOrderNum); }
     return aOrder;
+  }
+  
+  public LoginReader makeLoginReader() throws LoginException
+  {
+    if ( aLoginR == null )
+      aLoginR = new LoginR();
+    return aLoginR;
+  }
+  public LoginReadWriter makeLoginWriter() throws LoginException
+  {
+    if ( aLoginRW == null )
+      aLoginRW = new LoginRW();
+    return aLoginRW;
   }
 }
 

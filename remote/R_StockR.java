@@ -3,6 +3,7 @@ package remote;
 import catalogue.Product;
 import dbAccess.StockR;
 import middle.StockException;
+import java.sql.ResultSet;
 
 import javax.swing.*;
 import java.rmi.RemoteException;
@@ -39,6 +40,10 @@ public class      R_StockR
          throws RemoteException, StockException
   {
     return aStockR.exists( pNum );
+  }
+  
+  public synchronized ResultSet getAllDescription() throws StockException{
+	  return aStockR.getAllDescription();
   }
 
   /**
