@@ -11,9 +11,11 @@ import catalogue.Product;
 import debug.DEBUG;
 import middle.StockException;
 import middle.StockReader;
+import catalogue.Basket;
 
 import javax.swing.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 // There can only be 1 ResultSet opened per statement
 // so no simultaneous use of the statement object
@@ -192,12 +194,13 @@ public class StockR implements StockReader
 		  int biggestNum = 95;
 		  ResultSet rs = getStatementObject().executeQuery(
 				  "select orderNum"+
-				  " from Orders");
-		  //System.out.println("test1");
+				  " from Orders"+
+				  " order by orderNum desc");
+		  System.out.println("test1");
 		  if (rs.next()) {
 		  biggestNum = rs.getInt("orderNum");
 		  }
-		  //System.out.println("test2");
+		  System.out.println("test2");
 		  rs.close();
 		  System.out.println(biggestNum);
 		  biggestNum++;
@@ -207,6 +210,106 @@ public class StockR implements StockReader
 	  } catch (Exception e) {
 		  System.out.println(e);
 		  return 36;
+	  }
+  }
+  public synchronized boolean addOrder(int orderNum, String productNo, int quantity) {
+	  try {
+		  getStatementObject().executeUpdate(
+				  "insert into Orders values ( "+orderNum+", '"+productNo+"', "+quantity+")" );
+		  
+		  System.out.println("added into orders");
+		  return true;
+	  } catch (Exception e) {
+		  System.out.println(e);
+		  return false;
+	  }
+  }
+  public synchronized Basket getOrder(int orderNum) {
+	  System.out.println("test1 "+ orderNum);
+	  
+	  
+	  Basket theBasket = new Basket(orderNum);
+	  try {
+		  ResultSet rs = getStatementObject().executeQuery(
+				 "select * from Orders");
+		  while (rs.next()) { System.out.println(rs.getInt("Quantity"));}
+		  rs.close();
+		  //theCon.setAutoCommit(false);
+		  int counter = 0;
+		  ResultSet counters = getStatementObject().executeQuery(
+				  "select count(productNo) as counter from Orders where orderNum = "+ orderNum);
+		  if (counters.next()) {
+			  System.out.println(counters.getInt("counter")+"total hopefully");
+			  counter = counters.getInt("counter");
+		  }
+		  counters.close();
+		  //for (int i = 0; i < counter;i++) {
+			   rs = getStatementObject().executeQuery(
+				  "select productNo, Quantity from Orders where orderNum = "+orderNum);
+		  //for (int i = 0; i < counter;i++) {
+			   ArrayList<Integer> quants = new ArrayList<Integer>();
+			   ArrayList<String> pns = new ArrayList<String>();
+			   //ArrayList<Product> products = new ArrayList<Product>();
+			  while (rs.next()) {
+		  	//for (int i = 0; i < counter;i++) {
+				  System.out.println("test3.5");
+				  //int quant = rs.getInt("Quantity");
+				  quants.add(rs.getInt("Quantity"));
+				  //String pn = rs.getString("productNo");
+				  //products.add(getDetails(rs.getString("productNo")));
+				  pns.add(rs.getString("productNo"));
+				  //Product pr = getDetails(pn);
+			  //rs.next();
+				  //Product tempProduct = pr;
+			  //int quant = rs.getInt("Quantity");
+				  //tempProduct.setQuantity(quant);
+				  //theBasket.add(tempProduct);
+				  //System.out.println(quant+pn+"doisj");
+			  
+		  	}
+			  for (int j = 0; j < pns.size(); j++) {
+				  
+				  Product pr = getDetails(pns.get(j));
+				  pr.setQuantity(quants.get(0));
+				  theBasket.add(pr);
+			  }
+			  rs.close();
+		  //}
+		 
+		  
+		  //theCon.setAutoCommit(true);
+	  } catch (Exception e) {
+		  System.out.println(e);
+	  }
+	  
+	  return theBasket;
+  }
+  public synchronized ArrayList<Integer> getOrderNums (String username) {
+	  System.out.println("test4");
+	  
+	  ArrayList<Integer> orders = new ArrayList<Integer>();
+	  try {
+		  ResultSet rs = getStatementObject().executeQuery(
+				  "select orderNum from UOLink where username = '"+username+"'");
+		  while (rs.next()) {
+			 orders.add(rs.getInt("orderNum"));
+		  }
+		  rs.close();
+	  } catch (Exception e) {
+		  System.out.println(e);
+	  }
+	  return orders;
+	  }
+  
+  public synchronized void addUserAndOrder(String username, int orderNum) {
+	  try {
+		  getStatementObject().executeUpdate(
+				  "insert into UOLink values ( "+orderNum+", '"+username+"')" );
+		  
+		  System.out.println("added into UOLink");
+		  
+	  } catch (Exception e) {
+		  System.out.println(e);
 	  }
   }
 }

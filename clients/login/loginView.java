@@ -191,17 +191,15 @@ public class loginView implements Observer
     loginModel model  = (loginModel) modelC;
     String        message = (String) arg;
     theAction.setText( message );
-    if (message.equals("adding your account"))
+    if (message.equals("adding your account") || message.equals("logging in") )
     {
-    	theUsername.setText("");
-    	thePassword.setText("");
-    	thePassCheck.setText("");
-    	theAction.setText("logging in");
-    	
-    } else if (message.equals("logging in")) {
     	removeItems();
     	addItems();   
     	getUserfromModel();
+    	
+    	
+    } else if (message.equals("Orders:")) {
+    	theInstructions.setText(cont.getAllOrderDetails());
     }
   }
 	public void getUserfromModel() {

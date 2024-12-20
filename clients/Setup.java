@@ -60,6 +60,18 @@ class Setup
 		   "Quantity	Integer)",
 		   
 		   "insert into Orders values (1,'0003',2)",
+		   "insert into Orders values (2,'0004',2)",
+		   "insert into Orders values (2,'0001',2)",
+		   "insert into Orders values (3,'0003',5)",
+		   
+	"drop table UOLink",
+	"create table UOLink ("+
+			"orderNum  Integer,"+
+			"username  Varchar(20))",
+			
+			"insert into UOLink values (1, 'jas')",
+			"insert into UOLink values (2, 'jas')",
+			"insert into UOLink values (3, 'user1')",
 
   "drop table StockTable",
   "create table StockTable ("+

@@ -28,7 +28,9 @@ public class Basket extends ArrayList<Product> implements Serializable
   {
     theOrderNum  = 0;
   }
-  
+  public Basket(int orderNum) {
+	  theOrderNum = orderNum;
+  }
   /**
    * Set the customers unique order number
    * Valid order Numbers 1 .. N
@@ -58,16 +60,13 @@ public class Basket extends ArrayList<Product> implements Serializable
   // Will be in the Java doc for Basket
   @Override
   public boolean add( Product pr )
-
 	  {     
 			boolean inList = false;
 			for (Product x:this) {
 				if (x.getProductNum().equals(pr.getProductNum())) {
 					inList = true;
 					x.setQuantity(x.getQuantity()+pr.getQuantity());
-					
 				}
-				
 			}
 			if (inList == false) {
 				super.add( pr );  

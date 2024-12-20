@@ -8,6 +8,9 @@ import middle.MiddleFactory;
 import middle.LoginException;
 import middle.LoginReader;
 import middle.LoginReadWriter;
+import middle.StockException;
+import middle.StockReader;
+import middle.StockReadWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
@@ -24,9 +27,10 @@ public class loginModel extends Observable
 
   public ArrayList<Integer> numbers = new ArrayList<Integer>(List.of(0,1,2,3,4,5,6,7,8,9));
   private LoginReadWriter loginwriter     = null;
-  
+  private StockReadWriter theStock = null;
   private User 		  currentUser = null;
 
+  private String orderDetails = "";
   /*
    * Construct the model of the back door client
    * @param mf The factory to create the connection objects
@@ -38,6 +42,7 @@ public class loginModel extends Observable
     {      
       loginLink = mf.makeLoginReader();        // Database access
       loginwriter = mf.makeLoginWriter();
+      theStock = mf.makeStockReadWriter();
     } catch ( Exception e )
     {
       DEBUG.error("CustomerModel.constructor\n%s", e.getMessage() );
@@ -185,7 +190,29 @@ public class loginModel extends Observable
   }
   public void doOrderCheck()
   {
-	  //TODO fill in here
+	  String theAction = "";
+	  
+	  try {
+		  ArrayList<Integer> listoforder = theStock.getOrderNums(currentUser.getUsername());
+		  //get the list of every order number for the user
+		  if (listoforder.size() != 0){
+			  for (int ordernumberfromlist:listoforder) {
+				  //for each order number, make the basket and get the details
+				  Basket tempBasket = theStock.getOrder(ordernumberfromlist);
+				  orderDetails = orderDetails+tempBasket.getDetails()+"\n";
+			  }
+			  theAction = "Orders:";
+		  } else {
+			  theAction = "no orders";
+		  }
+		  System.out.println(orderDetails);
+	  } catch (Exception e) {
+		  System.out.println(e);
+	  }
+	  setChanged(); notifyObservers(theAction);
+  }
+  public String getAllOrderDetails() {
+	  return orderDetails;
   }
   public void doReturn()
   {

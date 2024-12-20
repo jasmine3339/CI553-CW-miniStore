@@ -1,8 +1,10 @@
 package middle;
 
+import catalogue.Basket;
 import catalogue.Product;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -56,4 +58,12 @@ public interface StockReader
    * @throws StockException
    */
   int getNextOrderNum() throws StockException;
-}
+  
+  public ArrayList<Integer> getOrderNums (String username) throws StockException;
+  
+  public Basket getOrder(int orderNum) throws StockException;
+  
+  public void addUserAndOrder(String username, int orderNum) throws OrderException;
+	  
+  }
+  

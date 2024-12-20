@@ -70,5 +70,8 @@ public class loginController
   {
 	  model.doReturn();
   }
+  public String getAllOrderDetails() {
+	  return model.getAllOrderDetails();
+  }
 }
 

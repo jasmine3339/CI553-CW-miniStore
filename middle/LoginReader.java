@@ -34,4 +34,5 @@ public interface LoginReader
   
   User getPassword(String username) throws LoginException;
   
+  User getCurrentUser();
 }

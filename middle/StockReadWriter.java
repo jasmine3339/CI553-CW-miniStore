@@ -1,5 +1,8 @@
 package middle;
 
+import java.util.ArrayList;
+
+import catalogue.Basket;
 import catalogue.Product;
 
 /**
@@ -35,5 +38,8 @@ public interface StockReadWriter extends StockReader
    * @throws middle.StockException if issue
    */
   void modifyStock(Product detail) throws StockException;
-
+  
+  boolean addOrder(int orderNum, String productNo, int quantity) throws StockException;
+  
+  
 }

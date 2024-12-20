@@ -15,7 +15,7 @@ public class LoginR implements LoginReader
 {
 	private Connection theCon    = null;      // Connection to database
 	private Statement  theStmt   = null;      // Statement object
-
+	private User currentUser = null;			//so user can be accessed from other places
 	
 	/**
 	 * Connects to database
@@ -48,7 +48,9 @@ public class LoginR implements LoginReader
 	}
 
 
-
+	public User getCurrentUser() {
+		return currentUser;
+	}
 
 	  /**
 	   * Returns a statement object that is used to process SQL statements
@@ -104,7 +106,7 @@ public class LoginR implements LoginReader
 	public User getPassword(String username) throws LoginException {
 		 try
 		    {
-		      User   dt = new User();
+			  currentUser = new User();
 		      ResultSet rs = getStatementObject().executeQuery(
 		        "select password " +
 		        "  from Users " +
@@ -113,11 +115,11 @@ public class LoginR implements LoginReader
 		      );
 		      if ( rs.next() )
 		      {
-		        dt.setUsername( username );
-		        dt.setPassword( rs.getString( "password" ) );
+		        currentUser.setUsername( username );
+		        currentUser.setPassword( rs.getString( "password" ) );
 		      }
 		      rs.close();
-		      return dt;
+		      return currentUser;
 		    } catch ( SQLException e )
 		    {
 		      throw new LoginException( "SQL getDetails: " + e.getMessage() );

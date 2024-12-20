@@ -23,7 +23,7 @@ public class LoginRW extends LoginR implements LoginReadWriter
 	  try
 	    {
 	      getStatementObject().executeUpdate( 
-	        "INSERT INTO Users(username, password) VALUES ("+user+", "+pass+")"
+	        "INSERT INTO Users(username, password) VALUES ('"+user+"', '"+pass+"')"
 	      );
 	      
 	      DEBUG.trace( "DB LoginRW: adduser(%s,%s)" , user, pass );
