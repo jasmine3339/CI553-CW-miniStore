@@ -114,4 +114,10 @@ public class F_StockRW extends F_StockR
     }
   }
 
+@Override
+public boolean addOrder(int orderNum, String productNo, int quantity) throws StockException {
+	// TODO Auto-generated method stub
+	return false;
+}
+
 }

@@ -1,5 +1,7 @@
 package middle;
 
+import catalogue.Basket;
+
 /**
  * Facade for read access to the stock list.
  * The actual implementation of this is held on the middle tier.
@@ -17,6 +19,7 @@ import javax.swing.*;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 /**
  * Setup connection to the middle tier
@@ -129,6 +132,24 @@ public class F_StockR implements StockReader
 public int getNextOrderNum() throws StockException {
 	// TODO Auto-generated method stub
 	return 0;
+}
+
+@Override
+public ArrayList<Integer> getOrderNums(String username) throws StockException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public Basket getOrder(int orderNum) throws StockException {
+	// TODO Auto-generated method stub
+	return null;
+}
+
+@Override
+public void addUserAndOrder(String username, int orderNum) throws OrderException {
+	// TODO Auto-generated method stub
+	
 }}
   
   

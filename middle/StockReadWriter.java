@@ -39,6 +39,14 @@ public interface StockReadWriter extends StockReader
    */
   void modifyStock(Product detail) throws StockException;
   
+  /**
+   * adds new order to database, and quantity of each product
+   * @param orderNum
+   * @param productNo
+   * @param quantity
+   * @return true is added, false if not
+   * @throws StockException
+   */
   boolean addOrder(int orderNum, String productNo, int quantity) throws StockException;
   
   

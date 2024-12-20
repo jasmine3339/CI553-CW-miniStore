@@ -17,6 +17,11 @@ public class LoginRW extends LoginR implements LoginReadWriter
     super();        // Connection done in loginR's constructor
   }
   
+  /**
+   * adds a new user to the users database. 
+   * @param user, username - checked in loginmodel
+   * @param pass, password checked in loginmodel
+   */
   public synchronized void addUser( String user, String pass )
 	         throws LoginException
 	  {

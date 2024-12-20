@@ -189,6 +189,11 @@ public class StockR implements StockReader
 		return null;
 	}
   }
+  
+  /**
+   * this gets the next order number available, so instead of starting at one everytime the program starts, 
+   * it has a unique number, and wont break the database
+   */
   public synchronized int getNextOrderNum() {
 	  try {
 		  int biggestNum = 95;
@@ -212,6 +217,14 @@ public class StockR implements StockReader
 		  return 36;
 	  }
   }
+  
+  /**
+   * this adds the new order into the database
+   * @param orderNum
+   * @param productNo
+   * @param quantity
+   * @return true if it has been added, false if not
+   */
   public synchronized boolean addOrder(int orderNum, String productNo, int quantity) {
 	  try {
 		  getStatementObject().executeUpdate(
@@ -224,6 +237,12 @@ public class StockR implements StockReader
 		  return false;
 	  }
   }
+  
+  /**
+   * this gets the basket from a specified order number, used by the order button in login.
+   * @param orderNum - order number 
+   * @return a basket with each product and quantity in
+   */
   public synchronized Basket getOrder(int orderNum) {
 	  System.out.println("test1 "+ orderNum);
 	  
@@ -232,9 +251,8 @@ public class StockR implements StockReader
 	  try {
 		  ResultSet rs = getStatementObject().executeQuery(
 				 "select * from Orders");
-		  while (rs.next()) { System.out.println(rs.getInt("Quantity"));}
-		  rs.close();
-		  //theCon.setAutoCommit(false);
+		  while (rs.next()) { System.out.println(rs.getInt("Quantity"));} 
+
 		  int counter = 0;
 		  ResultSet counters = getStatementObject().executeQuery(
 				  "select count(productNo) as counter from Orders where orderNum = "+ orderNum);
@@ -243,28 +261,14 @@ public class StockR implements StockReader
 			  counter = counters.getInt("counter");
 		  }
 		  counters.close();
-		  //for (int i = 0; i < counter;i++) {
 			   rs = getStatementObject().executeQuery(
 				  "select productNo, Quantity from Orders where orderNum = "+orderNum);
-		  //for (int i = 0; i < counter;i++) {
 			   ArrayList<Integer> quants = new ArrayList<Integer>();
 			   ArrayList<String> pns = new ArrayList<String>();
-			   //ArrayList<Product> products = new ArrayList<Product>();
 			  while (rs.next()) {
-		  	//for (int i = 0; i < counter;i++) {
 				  System.out.println("test3.5");
-				  //int quant = rs.getInt("Quantity");
 				  quants.add(rs.getInt("Quantity"));
-				  //String pn = rs.getString("productNo");
-				  //products.add(getDetails(rs.getString("productNo")));
 				  pns.add(rs.getString("productNo"));
-				  //Product pr = getDetails(pn);
-			  //rs.next();
-				  //Product tempProduct = pr;
-			  //int quant = rs.getInt("Quantity");
-				  //tempProduct.setQuantity(quant);
-				  //theBasket.add(tempProduct);
-				  //System.out.println(quant+pn+"doisj");
 			  
 		  	}
 			  for (int j = 0; j < pns.size(); j++) {
@@ -284,6 +288,12 @@ public class StockR implements StockReader
 	  
 	  return theBasket;
   }
+  
+  /**
+   * this gets a users list of orders by their username
+   * @param username
+   * @return integer arraylist with the order numbers in 
+   */
   public synchronized ArrayList<Integer> getOrderNums (String username) {
 	  System.out.println("test4");
 	  

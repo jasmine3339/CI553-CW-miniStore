@@ -41,8 +41,8 @@ public class loginModel extends Observable
     try                                           // 
     {      
       loginLink = mf.makeLoginReader();        // Database access
-      loginwriter = mf.makeLoginWriter();
-      theStock = mf.makeStockReadWriter();
+      loginwriter = mf.makeLoginWriter();		//database writing access
+      theStock = mf.makeStockReadWriter(); //stock access
     } catch ( Exception e )
     {
       DEBUG.error("CustomerModel.constructor\n%s", e.getMessage() );
@@ -85,13 +85,21 @@ public class loginModel extends Observable
   }
   
   
-  
+  /**
+   * takes both username and password, checks if username is in database, and that password that 
+   * has been entered is the right one
+   * @param username
+   * @param password
+   */
   public void doLogin(String username, String password) {
 	  boolean loginFlag = false;
 	  String theAction = "";
 	  try {
-		  currentUser = doCheck(username);
+		  //check if user is already in database
+		  currentUser = doCheck(username); 
+		  //get the password the user was supposed to enter
 		  String actualpassword = currentUser.getPassword();
+		  //compare passwords and change action acordingly.
 		  if (actualpassword.equals(password)) {
 			  loginFlag = true;
 			  theAction = "logging in";
@@ -99,34 +107,50 @@ public class loginModel extends Observable
 		  } else {
 			  theAction = "username or password incorrect";
 		  }
+		  //exception if anything goes wrong to make them enter again
 	  } catch (Exception e) {
 		  System.out.println("exception "+e);
 		  theAction = "username or password incorrect";
 	  }
 	  System.out.println("login"+username +password);
 	  System.out.println("have they been logged in"+loginFlag);
-	  setChanged(); notifyObservers(theAction);
+	  setChanged(); notifyObservers(theAction); //update the observer that the actino has changed
 
   }
+  
+  /**
+   * gets current user so can be used in other parts of code
+   * @return current user
+   */
   public User getUser() {
 	  System.out.println("getUser in model");
 	  return currentUser;
   }
 
+  /** 
+   * creating a new account. checks if username already exists, if both passwords match and if 
+   * they are long and complicated enough
+   * @param username
+   * @param password
+   * @param passcheck
+   */
   public void doCreate(String username, String password, String passcheck) {
-	  boolean loginFlag = false;
+	  boolean loginFlag = false; //not logged in yet
 	  System.out.println("create"+passcheck);
+	  //get rid of any whitepace from the inputs
 	  username = username.trim();
 	  password = password.trim();
 	  passcheck = password.trim();
 	  String theAction = "";
 	  boolean numFlag = false;
+	  //check if username is already in the database, if so user has to change it
 	  User usernamecheck = doCheck(username);
 	  if (usernamecheck == null) {
 		  try
 		    {
 			  //check if the username is empty
 			  //check in db if there is a username with that name already
+			  //checking the passwords are the same and the instructions have been met
 			  if (password.equals(passcheck)) {
 				  if ( password.length() > 7 && password.length() < 16) {
 					  if (!(password.toLowerCase().equals(password))) {
@@ -145,16 +169,11 @@ public class loginModel extends Observable
 								  currentUser = new User(username,password);
 								  loginFlag = true;
 								  
-								  
-								  
-								  
-								  
 								  //add account to the database
 							  } else {
+								  //appropriate messages to display if password is not right
 								  theAction = "try adding a number";
 							  }
-							  
-							   
 						  } else {
 							  theAction =  "try adding a lowercase letter";			  
 						  }
@@ -188,6 +207,10 @@ public class loginModel extends Observable
   {
 	  //TODO fill in here 
   }
+  
+  /**
+   * allows user to see all previous orders
+   */
   public void doOrderCheck()
   {
 	  String theAction = "";

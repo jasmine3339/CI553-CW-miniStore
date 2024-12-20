@@ -35,6 +35,9 @@ public class loginController
 	//System.out.println(newUser.getUsername());
     //view.setUser(newUser);
   }
+  /**
+   * this connects the view and model so the user is set the same in both
+   */
   public void getUserfromModel() {
 	  User newUser = model.getUser();
 	  System.out.println(newUser.getUsername());
@@ -57,7 +60,7 @@ public class loginController
   {
     model.doClear();
   }
-  
+ 
   public void doProgress()
   {
 	  model.doProgress();

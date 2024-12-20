@@ -23,16 +23,19 @@ public interface LoginReader
    */
   boolean exists(String username) throws LoginException;
          
-  /**
-   * Returns details about the product in the stock list
-   * @param pNum Product nymber
-   * @return StockNumber, Description, Price, Quantity
-   * @throws StockException if issue
-   */
- 
-    
   
+    
+  /**
+   * gets the password of a specified username
+   * @param username
+   * @return password
+   * @throws LoginException
+   */
   User getPassword(String username) throws LoginException;
   
+  /**
+   * returns current user from login details
+   * @return currentuser
+   */
   User getCurrentUser();
 }

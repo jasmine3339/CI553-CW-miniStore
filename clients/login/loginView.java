@@ -100,19 +100,19 @@ public class loginView implements Observer
     theBtProgress.setVisible(false);
     cp.add( theBtProgress ); 
    
-    theBtOrders.setBounds( 16, 25+60*1, 80, 40 );    // login button 
+    theBtOrders.setBounds( 16, 25+60*1, 80, 40 );    // order check button 
     theBtOrders.addActionListener(                   // Call back code
     	      e -> cont.doOrderCheck( ));
-    	    theBtOrders.setVisible(false);
+    	    theBtOrders.setVisible(false);			//hide it for now
     	    cp.add( theBtOrders); 
     	    
-    theBtReturn.setBounds( 16, 25+60*2, 80, 40 );    // login button 
+    theBtReturn.setBounds( 16, 25+60*2, 80, 40 );    // return button 
     theBtReturn.addActionListener(                   // Call back code
     	      e -> cont.doReturn( ));
-    	    theBtReturn.setVisible(false);
+    	    theBtReturn.setVisible(false); 				//hide it for now
     	    cp.add( theBtReturn ); 
     	    
-    theOrderNum.setBounds( 16, 25+60*3, 80, 40);
+    theOrderNum.setBounds( 16, 25+60*3, 80, 40);	//input for order number to return?
     theOrderNum.setVisible(false);
     cp.add(theOrderNum);
     
@@ -157,10 +157,19 @@ public class loginView implements Observer
   {
     cont = c;
   }
+  
+  /**
+   * this sets the user so only one is logged in at once.
+   * @param addUser - user to be added as current user
+   */
   public void setUser(User addUser) {
 	  currentUser = addUser;
   }
   
+  /**
+   * this sets all initial j variables to be blank or not visible. and sets the scroll pane to be 
+   * in a different place so all the buttons and boxes fit.
+   */
   public void removeItems() {
 	  theUsername.setVisible(false);
 	  thePassword.setVisible(false);
@@ -174,6 +183,10 @@ public class loginView implements Observer
 	  theSP.setBounds(110, 55, 270, 205);
 	  
   }
+  
+  /**
+   * this sets all the previously hidden items to be visible so they can be used
+   */
   public void addItems() {
 	  theBtProgress.setVisible(true);
 	  theBtOrders.setVisible(true);
@@ -193,15 +206,21 @@ public class loginView implements Observer
     theAction.setText( message );
     if (message.equals("adding your account") || message.equals("logging in") )
     {
+    	//changing the window so after it has been logged in different buttons appear
     	removeItems();
     	addItems();   
     	getUserfromModel();
     	
-    	
     } else if (message.equals("Orders:")) {
+    	//set the sp text to all the previous orders of the user 
     	theInstructions.setText(cont.getAllOrderDetails());
     }
   }
+  
+  /**
+   * this connects to the model to get the user so the page title can be set to 
+   * hello and their username
+   */
 	public void getUserfromModel() {
 		cont.getUserfromModel();
 		pageTitle.setText("hello "+currentUser.getUsername());

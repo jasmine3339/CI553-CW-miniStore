@@ -50,6 +50,11 @@ public class Order implements OrderProcessing
   // Active orders in the Catshop system
   private final ArrayList<Folder>  folders = new ArrayList<>();
   private static int theNextNumber;
+  /**
+   * initialises the order by giving it the order number to start with so 2 orders cant have the
+   * same number in the database
+   * @param orderNum
+   */
   public Order(int orderNum) {
 	  System.out.println("the ordernum "+orderNum);
 	  theNextNumber = orderNum;          // Start at order at last orderNum+1

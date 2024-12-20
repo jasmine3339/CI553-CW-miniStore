@@ -48,6 +48,9 @@ public class LoginR implements LoginReader
 	}
 
 
+	/**
+	 * returns the User who is currently logged in
+	 */
 	public User getCurrentUser() {
 		return currentUser;
 	}
@@ -102,6 +105,9 @@ public class LoginR implements LoginReader
 
 
 
+	/**
+	 * gets the password to a username, returns the user.
+	 */
 	@Override
 	public User getPassword(String username) throws LoginException {
 		 try

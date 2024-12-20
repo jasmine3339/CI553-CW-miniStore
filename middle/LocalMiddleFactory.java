@@ -71,12 +71,18 @@ public class LocalMiddleFactory implements MiddleFactory
     return aOrder;
   }
   
+  /**
+   *  makes a login reader if one hasnt already been made
+   */
   public LoginReader makeLoginReader() throws LoginException
   {
     if ( aLoginR == null )
       aLoginR = new LoginR();
     return aLoginR;
   }
+  /**
+   * makes a login writer if one hasnt already been made
+   */
   public LoginReadWriter makeLoginWriter() throws LoginException
   {
     if ( aLoginRW == null )

@@ -59,10 +59,28 @@ public interface StockReader
    */
   int getNextOrderNum() throws StockException;
   
+  /**
+   * gets list of all users order numbers 
+   * @param username
+   * @return arraylist of each order number
+   * @throws StockException
+   */
   public ArrayList<Integer> getOrderNums (String username) throws StockException;
   
+  /**
+   * gets basket for a specified order number
+   * @param orderNum
+   * @return basket of the order specified
+   * @throws StockException
+   */
   public Basket getOrder(int orderNum) throws StockException;
   
+  /**
+   * adds to the linking table, only used if someone is logged in when order is made.
+   * @param username
+   * @param orderNum
+   * @throws OrderException
+   */
   public void addUserAndOrder(String username, int orderNum) throws OrderException;
 	  
   }

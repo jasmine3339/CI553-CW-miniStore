@@ -13,6 +13,9 @@ public class User
 	{
 		//use the db to initialise users to compare
 	}
+	/**
+	 * 2 ways to make a user, if you know the username and password right away you can start with them initialkised.
+	 */
 	public User(String user, String pass)
 	{
 		username = user;

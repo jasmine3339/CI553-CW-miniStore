@@ -51,6 +51,7 @@ class Setup
          "password      Varchar(12))",
 
          "insert into Users values ( 'jas',  '00000000' )",
+         "insert into Users values ( 'user1',  'ijnmko0P' )",
 
          
    "drop table Orders",
