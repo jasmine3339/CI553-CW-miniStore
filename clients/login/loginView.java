@@ -21,7 +21,7 @@ public class loginView implements Observer
   private static final String CREATE    = "Create";
   private static final String PROGRESS = "Progress";
   private static final String ORDERS = "Orders";
-  private static final String RETURN = "Return";
+  private static final String LOGOUT = "Logout";
  
   private static final int H = 300;       // Height of window pixels
   private static final int W = 400;       // Width  of window pixels
@@ -40,12 +40,12 @@ public class loginView implements Observer
   private final JButton     theBtCreate = new JButton( CREATE );
   private final JButton     theBtProgress = new JButton( PROGRESS );
   private final JButton     theBtOrders = new JButton( ORDERS );
-  private final JButton     theBtReturn = new JButton( RETURN );
+  private final JButton     theBtLogOut = new JButton( LOGOUT );
   
   private final JTextField	theUsername = new JTextField();
   private final JTextField  thePassword = new JTextField();
   private final JTextField	thePassCheck = new JTextField();
-  private final JTextField	theOrderNum = new JTextField();
+  //private final JTextField	theOrderNum = new JTextField();
   
   private User currentUser = null;
   private StockReadWriter theStock     = null;
@@ -106,15 +106,15 @@ public class loginView implements Observer
     	    theBtOrders.setVisible(false);			//hide it for now
     	    cp.add( theBtOrders); 
     	    
-    theBtReturn.setBounds( 16, 25+60*2, 80, 40 );    // return button 
-    theBtReturn.addActionListener(                   // Call back code
-    	      e -> cont.doReturn( ));
-    	    theBtReturn.setVisible(false); 				//hide it for now
-    	    cp.add( theBtReturn ); 
+    theBtLogOut.setBounds( 16, 25+60*2, 80, 40 );    // return button 
+    theBtLogOut.addActionListener(                   // Call back code
+    	      e -> cont.doLogOut( ));
+    	    theBtLogOut.setVisible(false); 				//hide it for now
+    	    cp.add( theBtLogOut ); 
     	    
-    theOrderNum.setBounds( 16, 25+60*3, 80, 40);	//input for order number to return?
-    theOrderNum.setVisible(false);
-    cp.add(theOrderNum);
+    //theOrderNum.setBounds( 16, 25+60*3, 80, 40);	//input for order number to return?
+    //theOrderNum.setVisible(false);
+    //cp.add(theOrderNum);
     
     theAction.setBounds( 110, 25 , 270, 20 );       // Message area
     theAction.setText( "" );                        // Blank
@@ -165,7 +165,12 @@ public class loginView implements Observer
   public void setUser(User addUser) {
 	  currentUser = addUser;
   }
-  
+  /**
+   * sets the user to null, for when they log out
+   */
+  public void removeUser() {
+	  currentUser = null;
+  }
   /**
    * this sets all initial j variables to be blank or not visible. and sets the scroll pane to be 
    * in a different place so all the buttons and boxes fit.
@@ -190,8 +195,29 @@ public class loginView implements Observer
   public void addItems() {
 	  theBtProgress.setVisible(true);
 	  theBtOrders.setVisible(true);
-	  theBtReturn.setVisible(true);
-	  theOrderNum.setVisible(true);
+	  theBtLogOut.setVisible(true);
+	  //theOrderNum.setVisible(true);
+  }
+  
+  public void logInScreen() {
+	  theBtProgress.setVisible(false);
+	  theBtOrders.setVisible(false);
+	  theBtLogOut.setVisible(false);
+	  theUsername.setVisible(true);
+	  thePassword.setVisible(true);
+	  thePassCheck.setVisible(true);
+	  username.setText("username");
+	  password.setText("pasword");
+	  passcheck.setText("confirm password");
+	  theBtCreate.setVisible(true);
+	  theBtLogin.setVisible(true);
+	  theInstructions.setText( "password must be:\n- 8-12 characters\n- have at least:\n1 upper case letter\n1 lower case letter\n1 number" );                        //  Blank
+	  theSP.setBounds(16, 145, 215, 110);
+	  thePassCheck.setText("");
+	  thePassword.setText("");
+	  theUsername.setText("");
+	  pageTitle.setText("Log in or create an account");
+	  
   }
   /**
    * Update the view, called by notifyObservers(theAction) in model,
@@ -214,6 +240,12 @@ public class loginView implements Observer
     } else if (message.equals("Orders:")) {
     	//set the sp text to all the previous orders of the user 
     	theInstructions.setText(cont.getAllOrderDetails());
+    } else if (message.equals("logged out")) {
+    	logInScreen();
+    	
+    } else if (message.equals("Your order is being processed")||message.equals("Your order is being packed")||message.equals("Your order is out for delivery")) {
+    	String progressMessage = "This is your most recent order:\n"+cont.getAllOrderDetails();
+		theInstructions.setText(progressMessage);
     }
   }
   

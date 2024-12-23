@@ -54,7 +54,13 @@ public class LoginR implements LoginReader
 	public User getCurrentUser() {
 		return currentUser;
 	}
-
+	
+	public void removeUser() {
+		currentUser = null;
+	}
+	public void setUser(User user) {
+		currentUser = user;
+	}
 	  /**
 	   * Returns a statement object that is used to process SQL statements
 	   * @return A statement object used to access the database

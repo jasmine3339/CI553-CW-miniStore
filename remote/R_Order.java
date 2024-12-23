@@ -22,11 +22,13 @@ public class      R_Order
 {
   private static final long serialVersionUID = 1;
   private Order aOrder = null;
+  private int orderNum = 0;
+
 
   public R_Order( String url )
          throws RemoteException, OrderException
   {
-    aOrder = new Order();
+    aOrder = new Order(orderNum);
   }
 
   public void newOrder( Basket bought )

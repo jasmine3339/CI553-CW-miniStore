@@ -1,6 +1,7 @@
 package clients.cashier;
 
 import catalogue.Basket;
+import catalogue.User;
 import catalogue.Product;
 import debug.DEBUG;
 import middle.*;
@@ -22,6 +23,8 @@ public class CashierModel extends Observable
 
   private StockReadWriter theStock     = null;
   private OrderProcessing theOrder     = null;
+  private LoginReader theLogin = null;
+  private User currentUser = null;
 
   /**
    * Construct the model of the Cashier
@@ -34,6 +37,7 @@ public class CashierModel extends Observable
     {      
       theStock = mf.makeStockReadWriter();        // Database access
       theOrder = mf.makeOrderProcessing();        // Process order
+      theLogin = mf.makeLoginReader(); 				//so we can check if the user is logged in
     } catch ( Exception e )
     {
       DEBUG.error("CashierModel.constructor\n%s", e.getMessage() );
@@ -49,6 +53,12 @@ public class CashierModel extends Observable
   {
     return theBasket;
   }
+  public void setUser(User passedInUser) {
+	  currentUser = passedInUser;
+  }
+  public void removeUser() {
+	  currentUser = null;
+  }
 
   /**
    * Check if the product is in Stock
@@ -59,10 +69,6 @@ public class CashierModel extends Observable
     String theAction = "";
     theState  = State.process;                  // State process
     pn  = productNum.trim();  // Product no.
-    
-    
-    
-    
     //int    amount  = quantity;                         //  & quantity
     try
     {
@@ -88,13 +94,10 @@ public class CashierModel extends Observable
         theAction =                             //  Unknown
           "Unknown product number " + pn;       //  product no.
       }
-    } catch (NumberFormatException e) {
+    } catch (NumberFormatException e) { //catch if the numbers arent in the right format
     	theAction = "Unknown quantity number " + strquantity;
-    	
     }
-    
-    
-    catch( StockException e )
+    catch( StockException e ) //catch for any stock exceptions 
     {
       DEBUG.error( "%s\n%s", 
             "CashierModel.doCheck", e.getMessage() );
@@ -126,6 +129,7 @@ public class CashierModel extends Observable
           theBasket.add( theProduct  );          //  Add to bought
           theAction = "Purchased " +            //    details
                   theProduct.getDescription();  //
+          
         } else {                                // F
           theAction = "!!! Not in stock";       //  Now no stock
         }
@@ -181,15 +185,31 @@ public class CashierModel extends Observable
   /**
    * Customer pays for the contents of the basket
    */
-  public void doBought()
+  public void doBought() 
   {
     String theAction = "";
     int    amount  = 1;                       //  & quantity
+    
     try
     {
+//    	System.out.println("ordernum in basket "+theBasket.getOrderNum());
+//    	System.out.println("the product num"+theBasket.getFirst().getProductNum());
+//    	boolean addtodb = theStock.addOrder(theBasket.getOrderNum(), theBasket.getFirst().getProductNum(),2);
       if ( theBasket != null &&
            theBasket.size() >= 1 )            // items > 1
       {                                       // T
+    	  //check if the user is logged in, if yes add to the database, if not just add order details.
+    	  if (theLogin.getCurrentUser() != null ) {
+    		  theStock.addUserAndOrder(theLogin.getCurrentUser().getUsername(), theBasket.getOrderNum());
+    	  }
+    	  
+    		//adding the order details to the orders database.  
+    	  for (Product eachProduct:theBasket) {
+    		  boolean addtodb = theStock.addOrder(theBasket.getOrderNum(),eachProduct.getProductNum(),eachProduct.getQuantity());
+    		  if (addtodb == false) {
+    			  System.out.println("not added");
+    		  }
+    	  }
         theOrder.newOrder( theBasket );       //  Process order
         theBasket = null;                     //  reset
       }                                       //
@@ -201,6 +221,9 @@ public class CashierModel extends Observable
       DEBUG.error( "%s\n%s", 
             "CashierModel.doCancel", e.getMessage() );
       theAction = e.getMessage();
+    }
+    catch (Exception e) {
+    	System.out.println(e);
     }
     theBasket = null;
     setChanged(); notifyObservers(theAction); // Notify
@@ -243,5 +266,6 @@ public class CashierModel extends Observable
   {
     return new Basket();
   }
+  
 }
   

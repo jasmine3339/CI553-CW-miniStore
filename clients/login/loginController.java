@@ -52,6 +52,10 @@ public class loginController
   {
      model.doCreate(username, password, passcheck);
   }
+  public void doLogOut(){
+	  model.doLogOut();
+	  view.removeUser();
+  }
 
   /**
    * Clear interaction from view
@@ -69,10 +73,10 @@ public class loginController
   {
 	  model.doOrderCheck();
   }
-  public void doReturn()
-  {
-	  model.doReturn();
-  }
+//  public void doReturn()
+//  {
+//	  model.doReturn();
+//  }
   public String getAllOrderDetails() {
 	  return model.getAllOrderDetails();
   }

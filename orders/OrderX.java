@@ -6,6 +6,7 @@ import catalogue.Product;
 import debug.DEBUG;
 import middle.OrderException;
 import middle.OrderProcessing;
+import orders.Order.State;
 
 import java.util.stream.Collectors;
 
@@ -190,5 +191,11 @@ public class OrderX implements OrderProcessing
     }
     return res;
   }
+
+@Override
+public State getState(int orderNum) {
+	// TODO Auto-generated method stub
+	return null;
+}
 
 }

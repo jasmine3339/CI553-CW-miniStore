@@ -1,6 +1,7 @@
 package middle;
 
 import catalogue.Basket;
+import orders.Order.State;
 
 import java.util.List;
 import java.util.Map;
@@ -33,4 +34,5 @@ public interface OrderProcessing
   // not being used in this version
   public Map<String,List<Integer>> getOrderState() // Display
          throws OrderException;
+  public State getState(int orderNum);
 }

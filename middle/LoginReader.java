@@ -38,4 +38,8 @@ public interface LoginReader
    * @return currentuser
    */
   User getCurrentUser();
+  
+  void removeUser();
+  
+  void setUser(User user);
 }

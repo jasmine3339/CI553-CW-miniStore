@@ -62,23 +62,22 @@ public class Basket extends ArrayList<Product> implements Serializable
   public boolean add( Product pr )
 	  {     
 			boolean inList = false;
-			for (Product x:this) {
-				if (x.getProductNum().equals(pr.getProductNum())) {
-					inList = true;
-					x.setQuantity(x.getQuantity()+pr.getQuantity());
+			for (Product x:this) { //for each product in this basket
+				if (x.getProductNum().equals(pr.getProductNum())) { 
+					//check if the product we are looking for is in it
+					inList = true; //if so the flag is set to true
+					x.setQuantity(x.getQuantity()+pr.getQuantity()); //and we update the quantity
+					return true; //return true, item has been added
 				}
 			}
 			if (inList == false) {
+				//if it is not in the list we add the item to the basket, and make sure it is sorted
 				super.add( pr );  
 				Collections.sort(this);
-				return true; // Call add in ArrayList
-				
-			} else {
-				//pr.setQuantity(pr.getQuantity()+1);
-				
-				return true;
+				return true; //returns true if item has been added as new item
 			}
-			
+			 //returns false as the code will only get here if a return hasnt already been called
+			return false;
 	  }
   
   

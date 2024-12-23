@@ -24,7 +24,7 @@ import java.util.*;
  
 public class Order implements OrderProcessing
 {
-  private enum State {Waiting, BeingPacked, ToBeCollected };
+  public enum State {Waiting, BeingPacked, ToBeCollected };
   
   /**
    * Wraps a Basket and it state into a folder
@@ -58,6 +58,16 @@ public class Order implements OrderProcessing
   public Order(int orderNum) {
 	  System.out.println("the ordernum "+orderNum);
 	  theNextNumber = orderNum;          // Start at order at last orderNum+1
+  }
+  
+  public State getState(int orderNum) {
+	  for (Folder i:folders) {
+		  if (orderNum == i.getBasket().getOrderNum())
+		  {
+			  return i.getState();
+		  }
+	  }
+	  return null;
   }
 
   /**  

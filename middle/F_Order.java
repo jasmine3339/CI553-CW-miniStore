@@ -2,6 +2,7 @@ package middle;
 
 import catalogue.Basket;
 import debug.DEBUG;
+import orders.Order.State;
 import remote.RemoteOrder_I;
 
 import java.rmi.Naming;
@@ -156,4 +157,10 @@ public class F_Order implements OrderProcessing
       throw new OrderException( "Net: " + e.getMessage() );
     }
   }
+
+@Override
+public State getState(int orderNum) {
+	// TODO Auto-generated method stub
+	return null;
+}
 }

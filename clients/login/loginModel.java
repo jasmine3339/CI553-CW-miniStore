@@ -11,9 +11,12 @@ import middle.LoginReadWriter;
 import middle.StockException;
 import middle.StockReader;
 import middle.StockReadWriter;
+import middle.OrderProcessing;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
+import orders.Order.State;
+
  
 
 /**
@@ -25,12 +28,14 @@ public class loginModel extends Observable
   private String      checkingname = "";  					// Product being processed
   private LoginReader loginLink = null;			//link to the users database
 
-  public ArrayList<Integer> numbers = new ArrayList<Integer>(List.of(0,1,2,3,4,5,6,7,8,9));
+  public final ArrayList<Integer> numbers = new ArrayList<Integer>(List.of(0,1,2,3,4,5,6,7,8,9));
   private LoginReadWriter loginwriter     = null;
   private StockReadWriter theStock = null;
   private User 		  currentUser = null;
+  private OrderProcessing theOrder = null;
 
   private String orderDetails = "";
+  private boolean loginFlag = false;
   /*
    * Construct the model of the back door client
    * @param mf The factory to create the connection objects
@@ -43,6 +48,7 @@ public class loginModel extends Observable
       loginLink = mf.makeLoginReader();        // Database access
       loginwriter = mf.makeLoginWriter();		//database writing access
       theStock = mf.makeStockReadWriter(); //stock access
+      theOrder = mf.makeOrderProcessing(); 
     } catch ( Exception e )
     {
       DEBUG.error("CustomerModel.constructor\n%s", e.getMessage() );
@@ -92,7 +98,7 @@ public class loginModel extends Observable
    * @param password
    */
   public void doLogin(String username, String password) {
-	  boolean loginFlag = false;
+	  
 	  String theAction = "";
 	  try {
 		  //check if user is already in database
@@ -135,69 +141,74 @@ public class loginModel extends Observable
    * @param passcheck
    */
   public void doCreate(String username, String password, String passcheck) {
-	  boolean loginFlag = false; //not logged in yet
 	  System.out.println("create"+passcheck);
 	  //get rid of any whitepace from the inputs
 	  username = username.trim();
 	  password = password.trim();
-	  passcheck = password.trim();
+	  passcheck = passcheck.trim();
 	  String theAction = "";
 	  boolean numFlag = false;
-	  //check if username is already in the database, if so user has to change it
-	  User usernamecheck = doCheck(username);
-	  if (usernamecheck == null) {
-		  try
-		    {
-			  //check if the username is empty
-			  //check in db if there is a username with that name already
-			  //checking the passwords are the same and the instructions have been met
-			  if (password.equals(passcheck)) {
-				  if ( password.length() > 7 && password.length() < 16) {
-					  if (!(password.toLowerCase().equals(password))) {
-						  if (!(password.toUpperCase().equals(password))) {
-							  for (int num:numbers) {
-								  if (password.contains(String.valueOf(num))) 
-								  {
-									  numFlag = true;
+	  if (!(username.equals("")||password.equals(""))){
+		  //check if username is already in the database, if so user has to change it
+		  User usernamecheck = doCheck(username);
+		  if (usernamecheck == null) {
+			  try
+			    {
+				  //check if the username is empty
+				  //check in db if there is a username with that name already
+				  //checking the passwords are the same and the instructions have been met
+				  if (password.equals(passcheck)) {
+					  if ( password.length() > 7 && password.length() < 13) {
+						  if (!(password.toLowerCase().equals(password))) {
+							  if (!(password.toUpperCase().equals(password))) {
+								  for (int num:numbers) {
+									  if (password.contains(String.valueOf(num))) 
+									  {
+										  numFlag = true;
+										  
+										  break;
+									  } 
+								  }
+								  if (numFlag == true) {
+									  theAction =  "adding your account";
 									  
-									  break;
-								  } 
-							  }
-							  if (numFlag == true) {
-								  theAction =  "adding your account";
-								  loginwriter.addUser(username, password);
-								  currentUser = new User(username,password);
-								  loginFlag = true;
-								  
-								  //add account to the database
+									  loginwriter.addUser(username, password);
+									  currentUser = new User(username,password);
+									  loginLink.setUser(currentUser);
+									  loginFlag = true;
+									  
+									  //add account to the database
+								  } else {
+									  //appropriate messages to display if password is not right
+									  theAction = "try adding a number";
+								  }
 							  } else {
-								  //appropriate messages to display if password is not right
-								  theAction = "try adding a number";
+								  theAction =  "try adding a lowercase letter";			  
 							  }
 						  } else {
-							  theAction =  "try adding a lowercase letter";			  
+							  theAction = "try adding an uppercase letter";
 						  }
 					  } else {
-						  theAction = "try adding an uppercase letter";
+						  theAction =  "is your password between 8-12 characters";
 					  }
-				  } else {
-					  theAction =  "is your password between 8-15 characters";
-				  }
-			   } else {
-				   if (passcheck.equals("")) 
-				   {
-					   theAction = "make sure to re enter your password";   
 				   } else {
-					   theAction =  "passwords do not match";
-				   }
-			   } 
-			  
-		    } catch (Exception e) {
-		    	theAction = e.getMessage();
-		    }
+					   if (passcheck.equals("")) 
+					   {
+						   theAction = "make sure to re enter your password";   
+					   } else {
+						   theAction =  "passwords do not match";
+					   }
+				   } 
+				  
+			    } catch (Exception e) {
+			    	theAction = e.getMessage();
+			    }
+		  } else {
+			  theAction = "username already exists, please choose another";
+			  }
 	  } else {
-		  theAction = "username already exists, please choose another";
-		  }
+		  theAction = "not enough info added";
+	  }
 		      
 	  setChanged(); notifyObservers(theAction);
   }
@@ -205,7 +216,47 @@ public class loginModel extends Observable
 
   public void doProgress()
   {
-	  //TODO fill in here 
+	  String theAction = "";
+	  
+	  try {
+		  ArrayList<Integer> ordernumbers = theStock.getOrderNums(currentUser.getUsername());
+		  if (ordernumbers == null) {
+			  theAction = "no orders saved";
+		  } else {
+			  int newestOrder = ordernumbers.getLast();
+			  theBasket = theStock.getOrder(newestOrder);
+			  orderDetails = theBasket.getDetails();
+			  if (theBasket.getOrderNum() == newestOrder) {
+				  State state;
+				  try {
+					  state = theOrder.getState(newestOrder);
+				  } catch (Exception e) {
+					  state = null;
+				  }
+				  switch (state) {
+				  case Waiting:
+					  theAction = "Your order is being processed";
+					  break;
+				  case BeingPacked:
+					  theAction = "Your order is being packed";
+					  break;
+				  case ToBeCollected:
+				  case null:
+					  theAction = "Your order is out for delivery";
+					  break;
+					  
+				  }
+			  } 
+		  }
+	  
+	  } catch (Exception e) {
+		  
+		  System.out.println(e);
+		  theAction = "your order could not be found sorry";
+	  }
+	  theBasket = null;
+	  setChanged(); notifyObservers(theAction);
+	  
   }
   
   /**
@@ -237,9 +288,22 @@ public class loginModel extends Observable
   public String getAllOrderDetails() {
 	  return orderDetails;
   }
-  public void doReturn()
-  {
-	  //TODO fill in here
+//  public void doReturn()
+//  {
+//	  //TODO fill in here
+//  }
+//  
+  /**
+   * sets the user to null, and changed the flag to false
+   */
+  public void doLogOut() {
+	  currentUser = null;
+	  loginFlag = false;
+	  String theAction = "logged out";
+	  loginLink.removeUser();
+	  setChanged(); notifyObservers(theAction); 
+	  
+	  
   }
   /**
    * Clear the product()
