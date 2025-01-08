@@ -186,7 +186,6 @@ public class loginView implements Observer
 	  theBtLogin.setVisible(false);
 	  theInstructions.setText("");
 	  theSP.setBounds(110, 55, 270, 205);
-	  
   }
   
   /**

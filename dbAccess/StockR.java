@@ -278,7 +278,6 @@ public class StockR implements StockReader
 				  theBasket.add(pr);
 			  }
 			  rs.close();
-		  //}
 		 
 		  
 		  //theCon.setAutoCommit(true);
